@@ -3,6 +3,8 @@
 
 //#include <vector>
 
+double DewPoint(double vapor_pressure);
+
 double VirtualTemperature(double temperature, double mixing_ratio, double epsilon);
 
 #endif // VIRTUAL_TEMPERATURE_HPP

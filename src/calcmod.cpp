@@ -15,6 +15,10 @@ PYBIND11_MODULE(_calc_mod, m) {
     m.def("add", &add, "Add two numbers");
 
     // Unified binding with default epsilon
+    m.def("dewpoint", py::vectorize(DewPoint),
+            "Calculate dew point from water vapor partial pressure.",
+            py::arg("vapor_pressure"));
+
     m.def("virtual_temperature", py::vectorize(VirtualTemperature),
             "Calculate virtual temperature from temperature and mixing ratio.",
             py::arg("temperature"), py::arg("mixing_ratio"), py::arg("epsilon") = 0.622);
