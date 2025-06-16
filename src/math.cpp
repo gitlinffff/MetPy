@@ -1,13 +1,15 @@
 #include <cmath>
-#include <stdexcept>
+#include <iostream>   // for std::cerr
 #include "math.hpp"
 
 double lambert_wm1(double x, double tol, int max_iter) {
-    // Initial guess for W₋₁, from Corless et al. (1996) // need to check if this is
-    // correct
-    
+    // Corless, R.M., Gonnet, G.H., Hare, D.E.G. et al. On the LambertW function.
+    // Adv Comput Math 5, 329–359 (1996). https://doi.org/10.1007/BF02124750 
+
     if (x >= 0 || x < -1.0 / std::exp(1.0)) {
-        throw std::domain_error("W₋₁(x) is only defined for -1/e < x < 0");
+        std::cerr << "Warning in function '" << __func__
+            << "': lambert_wm1 is only defined for -1/e < x < 0\n";
+        return std::numeric_limits<double>::quiet_NaN();
     }
 
     double L1 = std::log(-x);
@@ -24,5 +26,7 @@ double lambert_wm1(double x, double tol, int max_iter) {
         }
     }
 
-    throw std::runtime_error("lambert_wm1 did not converge");
+    std::cerr << "Warning in function '" << __func__
+        << "': lambert_wm1 did not converge.\n";
+    return std::numeric_limits<double>::quiet_NaN();
 }
