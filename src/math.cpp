@@ -3,12 +3,13 @@
 #include "math.hpp"
 
 double lambert_wm1(double x, double tol, int max_iter) {
+    // Initial guess for W₋₁, from Corless et al. (1996) // need to check if this is
+    // correct
+    
     if (x >= 0 || x < -1.0 / std::exp(1.0)) {
         throw std::domain_error("W₋₁(x) is only defined for -1/e < x < 0");
     }
 
-    // Initial guess for W₋₁, from Corless et al. (1996) // need to check if this is
-    // correct
     double L1 = std::log(-x);
     double L2 = std::log(-L1);
     double w = L1 - L2 + (L2 / L1);
