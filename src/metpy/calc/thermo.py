@@ -650,7 +650,6 @@ def moist_lapse(pressure, temperature, reference_pressure=None):
 
     return ret.squeeze()
 
-
 @exporter.export
 @preprocess_and_wrap()
 @process_units(
@@ -735,6 +734,31 @@ def lcl(pressure, temperature, dewpoint, max_iters=None, eps=None):
 
     return p_lcl, t_lcl
 
+@exporter.export
+@preprocess_and_wrap()
+@process_units(
+    {'pressure': '[pressure]', 'temperature': '[temperature]', 'dewpoint': '[temperature]'},
+    ('[pressure]', '[temperature]')
+)
+def lcl_manual(pressure, temperature, dewpoint, max_iters=None, eps=None):
+    r""" modified from the above lcl function to use the manual vectorization from the
+    Python side.
+
+    """
+    if max_iters or eps:
+        _warnings.warn(
+            'max_iters, eps arguments unused and will be deprecated in a future version.',
+            PendingDeprecationWarning)
+
+    p_lcl = np.empty_like(pressure)
+    t_lcl = np.empty_like(temperature)
+    it = np.nditer([pressure, temperature, dewpoint, p_lcl, t_lcl],
+                   flags=['multi_index'],
+                   op_flags=[['readonly'], ['readonly'], ['readonly'], ['writeonly'], ['writeonly']])
+    for p, t, d, plcl, tlcl in it:
+        plcl[...] , tlcl[...] = _calc_mod.lcl(p.item(), t.item(), d.item())
+    
+    return p_lcl, t_lcl
 
 @exporter.export
 @preprocess_and_wrap()
