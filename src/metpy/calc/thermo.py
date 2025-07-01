@@ -1425,6 +1425,25 @@ def parcel_profile_with_lcl(pressure, temperature, dewpoint):
 
 
 @exporter.export
+@preprocess_and_wrap()
+@process_units(
+    {'pressure': '[pressure]', 'temperature': '[temperature]', 'dewpoint': '[temperature]'},
+    ('[pressure]', '[temperature]', '[temperature]', '[temperature]')
+)
+def parcel_profile_with_lcl_linfel(pressure, temperature, dewpoint):
+    """
+    Linfeng's version of 'parcel_profile_with_lcl'. Added on Jun 30 2025
+    """
+    result_array = _calc_mod.parcel_profile_with_lcl(pressure, temperature, dewpoint)
+    new_press = result_array[0]
+    prof_temp = result_array[1]
+    new_temp = result_array[2]
+    new_dewp = result_array[3]
+
+    return new_press, new_temp, new_dewp, prof_temp
+
+
+@exporter.export
 def parcel_profile_with_lcl_as_dataset(pressure, temperature, dewpoint):
     r"""Calculate the profile a parcel takes through the atmosphere, returning a Dataset.
 

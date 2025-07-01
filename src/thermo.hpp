@@ -61,6 +61,10 @@ std::vector<double> ParcelProfile(const std::vector<double>& pressure,
                                   double temperature,
                                   double dewpoint);
 
+py::array_t<double> ParcelProfileWithLCL(const std::vector<double>& pressure,
+                                         const std::vector<double>& temperature,
+                                         const std::vector<double>& dewpoint);
+
 ParProStruct _ParcelProfileHelper(const std::vector<double>& pressure, double temperature, double dewpoint);
 
 double _SaturationVaporPressureLiquid(double temperature);

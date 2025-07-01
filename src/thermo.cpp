@@ -342,6 +342,49 @@ std::vector<double> ParcelProfile(const std::vector<double>& pressure,
     return combined_temp;
 }
 
+
+py::array_t<double> ParcelProfileWithLCL(const std::vector<double>& pressure,
+                                         const std::vector<double>& temperature,
+                                         const std::vector<double>& dewpoint) {
+    ParProStruct profile = _ParcelProfileHelper(pressure, temperature[0], dewpoint[0]);
+
+    // Concatenate new pressure profiles
+    std::vector<double> new_press;
+    new_press.reserve(profile.press_lower.size() + 1 + profile.press_upper.size());
+    new_press.insert(new_press.end(), profile.press_lower.begin(), profile.press_lower.end());
+    new_press.push_back(profile.press_lcl);
+    new_press.insert(new_press.end(), profile.press_upper.begin(), profile.press_upper.end());
+
+    // Concatenate parcel temperature profiles
+    std::vector<double> prof_temp;
+    prof_temp.reserve(profile.temp_lower.size() + 1 + profile.temp_upper.size());
+    prof_temp.insert(prof_temp.end(), profile.temp_lower.begin(), profile.temp_lower.end());
+    prof_temp.push_back(profile.temp_lcl);
+    prof_temp.insert(prof_temp.end(), profile.temp_upper.begin(), profile.temp_upper.end());
+
+    // Interpolate and insert into original temperature and dewpoint profiles at
+    // press_lcl
+    std::vector<double> new_temp = temperature;
+    std::vector<double> new_dewpoint = dewpoint;
+    Interp1dAndInsert(pressure, new_temp, profile.press_lcl);
+    Interp1dAndInsert(pressure, new_dewpoint, profile.press_lcl);
+
+    // Prepare the 4 output profiles as a 2D numpy array
+    ssize_t n = new_press.size();
+    std::vector<ssize_t> shape = {4, n};
+    py::array_t<double> result_array(shape); // Create a 4xN array
+
+    double* ptr = result_array.mutable_data();
+
+    // Copy each vector into its respective "row".
+    std::copy(new_press.begin(), new_press.end(), ptr);            // Row 0
+    std::copy(prof_temp.begin(), prof_temp.end(), ptr + n);        // Row 1
+    std::copy(new_temp.begin(), new_temp.end(), ptr + 2 * n);      // Row 2
+    std::copy(new_dewpoint.begin(), new_dewpoint.end(), ptr + 3 * n); // Row 3
+    
+    return result_array;
+}
+
 ParProStruct _ParcelProfileHelper(const std::vector<double>& pressure, double temperature, double dewpoint) {
     // Check that pressure does not increase.
     if (!_CheckPressure(pressure)) {

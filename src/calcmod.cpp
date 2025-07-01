@@ -67,6 +67,9 @@ PYBIND11_MODULE(_calc_mod, m) {
             "Compute the parcel temperature profile as it rises from a given pressure and temperature.",
             py::arg("pressure"), py::arg("temperature"), py::arg("dewpoint"));
 
+    m.def("parcel_profile_with_lcl", &ParcelProfileWithLCL,
+            "This function returns parcel profile that includes the LCL.",
+            py::arg("pressure"), py::arg("temperature"), py::arg("dewpoint"));
 
     m.def("saturation_vapor_pressure", py::vectorize(SaturationVaporPressure),
             "Calculate saturation vapor pressure from temperature.",
