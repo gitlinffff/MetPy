@@ -77,11 +77,11 @@ py::array_t<double> DryLapseVectorized(py::array_t<double> pressure,
     
     // --- Step 3: Define the shape of the output array: (N+1) dimension---
     std::vector<size_t> out_shape;
+    size_t profile_len = pressure_vec.size();
+    out_shape.push_back(profile_len); // First dimension is the pressure profile length
     for(int i = 0; i < ref_temp_contig.ndim(); ++i) {
         out_shape.push_back(ref_temp_contig.shape(i));
     }
-    size_t profile_len = pressure_vec.size();
-    out_shape.push_back(profile_len);
     
     auto out_array = py::array_t<double>(out_shape);
 
@@ -93,7 +93,7 @@ py::array_t<double> DryLapseVectorized(py::array_t<double> pressure,
     // --- Step 5: Loop through each reference temperature ---
     for (size_t i = 0; i < num_profiles; ++i) {
         for (size_t j = 0; j < profile_len; ++j) {
-            out_array_ptr[i * profile_len + j] = DryLapse(pressure_vec[j], ref_temp_ptr[i], ref_pressure);
+            out_array_ptr[i + num_profiles * j] = DryLapse(pressure_vec[j], ref_temp_ptr[i], ref_pressure);
         }
     }
 
@@ -219,11 +219,11 @@ py::array_t<double> MoistLapseVectorized(py::array_t<double> pressure,
     
     // --- Step 3: Define the shape of the output array: (N+1) dimension---
     std::vector<size_t> out_shape;
+    size_t profile_len = pressure_vec.size();
+    out_shape.push_back(profile_len);  // First dimension is the pressure profile length
     for(int i = 0; i < ref_temp_contig.ndim(); ++i) {
         out_shape.push_back(ref_temp_contig.shape(i));
     }
-    size_t profile_len = pressure_vec.size();
-    out_shape.push_back(profile_len);
     
     auto out_array = py::array_t<double>(out_shape);
 
@@ -235,7 +235,7 @@ py::array_t<double> MoistLapseVectorized(py::array_t<double> pressure,
     // --- Step 5: Loop through each reference temperature ---
     for (size_t i = 0; i < num_profiles; ++i) {
         for (size_t j = 0; j < profile_len; ++j) {
-            out_array_ptr[i * profile_len + j] = MoistLapse(pressure_vec[j], ref_temp_ptr[i], ref_pressure, rk_nstep);
+            out_array_ptr[i + num_profiles * j] = MoistLapse(pressure_vec[j], ref_temp_ptr[i], ref_pressure, rk_nstep);
         }
     }
 
