@@ -43,9 +43,9 @@ double DryLapse(double pressure, double ref_temperature, double ref_pressure) {
     return ref_temperature * pow(pressure / ref_pressure, mc::kappa);
 }
 
-std::vector<double> DryLapseProfile(const std::vector<double>& pressure_profile,
-                                    double ref_temperature,
-                                    double ref_pressure) {
+std::vector<double> DryLapseSingleProfile(const std::vector<double>& pressure_profile,
+                                          double ref_temperature,
+                                          double ref_pressure) {
     // Vectorized version of DryLapse for a pressure profile. C++ internally use.
 
     // calculate temperature profile of an air parcel lifting dry adiabatically
@@ -60,7 +60,7 @@ std::vector<double> DryLapseProfile(const std::vector<double>& pressure_profile,
 }
 
 
-py::array_t<double> DryLapseVectorized(py::array_t<double> pressure,
+py::array_t<double> DryLapse1dPress(py::array_t<double> pressure,
                                          py::array_t<double> ref_temperature,
                                          double ref_pressure) {
     // This function calculates the dry adiabatic profile for multiple starting
@@ -100,7 +100,7 @@ py::array_t<double> DryLapseVectorized(py::array_t<double> pressure,
     return out_array;
 }
 
-py::array_t<double> DryLapseVectorized_3D(py::array_t<double> pressure,
+py::array_t<double> DryLapseNdPress(py::array_t<double> pressure,
                                          py::array_t<double> ref_temperature,
                                          py::array_t<double> ref_pressure) {
     // --- Step 1: Ensure all input arrays are using a contiguous memory layout ---
@@ -363,7 +363,7 @@ ParProStruct _ParcelProfileHelper(const std::vector<double>& pressure, double te
         }
     }
     press_lower.push_back(press_lcl);
-    std::vector<double> temp_lower = DryLapseProfile(press_lower, temperature, press_lower[0]);
+    std::vector<double> temp_lower = DryLapseSingleProfile(press_lower, temperature, press_lower[0]);
 
     // Early return if profile ends before reaching above LCL
     if (pressure.back() >= press_lcl) {
