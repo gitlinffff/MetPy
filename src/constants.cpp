@@ -20,6 +20,14 @@ namespace metpy_constants {
     double epsilon;
     double kappa;
 
+    // Additional constants not in MetPy (for H2O svp formulation in broader range)
+    double pr;
+    double tr;
+    double betal;
+    double betas;
+    double gammal;
+    double gammas;
+
     void load_constants_from_python() {
         py::object mod = py::module_::import("metpy.constants.nounit");
 
@@ -46,5 +54,13 @@ namespace metpy_constants {
         zero_degc = mod.attr("zero_degc").cast<double>();
         epsilon = mod.attr("epsilon").cast<double>();
         kappa = mod.attr("kappa").cast<double>();
+
+        // Additional constants not in MetPy (for H2O svp formulation in broader range)
+        pr = 611.7;
+        tr = 273.16;
+        betal = 24.845;
+        betas = 22.98;
+        gammal = 4.986009;
+        gammas = 0.52;
     }
 }

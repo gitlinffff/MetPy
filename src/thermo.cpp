@@ -302,19 +302,15 @@ ParProStruct _ParcelProfileHelper(const std::vector<double>& pressure, double te
 }
 
 double _SaturationVaporPressureLiquid(double temperature) {
-    double latent_heat = WaterLatentHeatVaporization(temperature);
-    double heat_power = (mc::Cp_l - mc::Cp_v) / mc::Rv;
-    double exp_term = (mc::Lv / mc::T0 - latent_heat / temperature) / mc::Rv;
-
-    return mc::sat_pressure_0c * exp(exp_term) * pow(mc::T0 / temperature, heat_power);
+    double t_ratio = temperature / mc::tr;
+    double exponent = (1.0 - 1.0 / t_ratio) * mc::betal - mc::gammal * log(t_ratio);
+    return mc::pr * exp(exponent);
 }
 
 double _SaturationVaporPressureSolid(double temperature) {
-    double latent_heat = WaterLatentHeatSublimation(temperature);
-    double heat_power = (mc::Cp_i - mc::Cp_v) / mc::Rv;
-    double exp_term = (mc::Ls / mc::T0 - latent_heat / temperature) / mc::Rv;
-
-    return mc::sat_pressure_0c * exp(exp_term) * pow(mc::T0 / temperature, heat_power);
+    double t_ratio = temperature / mc::tr;
+    double exponent = (1.0 - 1.0 / t_ratio) * mc::betas - mc::gammas * log(t_ratio);
+    return mc::pr * exp(exponent);
 }
 
 double SaturationVaporPressure(double temperature, std::string phase) {

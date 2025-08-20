@@ -30,6 +30,14 @@ namespace metpy_constants {
     extern double zero_degc;
     extern double epsilon;
     extern double kappa;
+    
+    // Additional constants not in MetPy (for H2O svp formulation in broader range)
+    extern double pr;
+    extern double tr;
+    extern double betal;
+    extern double betas;
+    extern double gammal;
+    extern double gammas;
 
     // General Meteorological constants
 //    extern double epsilon = Mw / Md; // ≈ 0.622
