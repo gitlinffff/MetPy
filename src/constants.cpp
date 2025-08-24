@@ -56,11 +56,11 @@ namespace metpy_constants {
         kappa = mod.attr("kappa").cast<double>();
 
         // Additional constants not in MetPy (for H2O svp formulation in broader range)
-        pr = 611.7;
-        tr = 273.16;
-        betal = 24.845;
-        betas = 22.98;
-        gammal = 4.986009;
-        gammas = 0.52;
+        pr = 611.7;  // pressure at triple point of water
+        tr = 273.16; // triple point temperature of water
+        betal = 24.845;  // beta parameter for liquid water
+        betas = 22.98;   // beta parameter for ice
+        gammal = 4.986009;  // gamma parameter for liquid water
+        gammas = 0.52;      // gamma parameter for ice
     }
 }

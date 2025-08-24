@@ -331,8 +331,22 @@ double SaturationVaporPressure(double temperature, std::string phase) {
 }
 
 double DewPoint(double vapor_pressure) {
-    double val = log(vapor_pressure / mc::sat_pressure_0c);
-    return mc::zero_degc + 243.5 * val / (17.67 - val);
+    double val = log(vapor_pressure / mc::pr);
+    double T_guess = mc::zero_degc + 243.5 * val / (17.67 - val);
+    double t_ratio,f, df, correction;
+
+    for (int i = 0; i < 10; ++i) {  // Newton's Iteration
+        t_ratio = T_guess / mc::tr;
+        f = val - (1.-1./t_ratio)*mc::betal + mc::gammal * log(t_ratio);
+        df = -mc::betal * mc::tr / (T_guess*T_guess) + mc::gammal / T_guess;
+        correction = f / df;
+        T_guess = T_guess - correction;
+        
+        if (abs(correction) < 0.01) {
+            break; // Exit the loop early
+        }
+    }
+    return T_guess;
 }
 
 double MixingRatio(double partial_press, double total_press, double epsilon) {
