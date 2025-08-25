@@ -1,8 +1,7 @@
 # Copyright (c) 2008,2015,2016,2018,2021 MetPy Developers.
 # Distributed under the terms of the BSD 3-Clause License.
 # SPDX-License-Identifier: BSD-3-Clause
-""" Parameters adapted to Jupiter's environment.
-    Constant and thermophysical property values expressed as quantities."""
+"""Constant and thermophysical property values expressed as quantities."""
 
 from ..package_tools import Exporter
 from ..units import units
@@ -12,7 +11,7 @@ exporter = Exporter(globals())
 # Export all the variables defined in this block
 with exporter:
     # Earth
-    earth_gravity = g = units.Quantity(25.92, 'm / s^2')  # Jupiter's gravity
+    earth_gravity = g = units.Quantity(9.80665, 'm / s^2')
     Re = earth_avg_radius = units.Quantity(6371008.7714, 'm')
     G = gravitational_constant = units.Quantity(6.67430e-11, 'm^3 / kg / s^2')
     GM = geocentric_gravitational_constant = units.Quantity(3986005e8, 'm^3 / s^2')
@@ -45,7 +44,7 @@ with exporter:
     T0 = water_triple_point_temperature = units.Quantity(273.16, 'K')
 
     # Dry air
-    Md = dry_air_molecular_weight = units.Quantity(2.2186332e-3, 'kg / mol')  # Jupiter
+    Md = dry_air_molecular_weight = units.Quantity(28.96546e-3, 'kg / mol')
     Rd = dry_air_gas_constant = R / Md
     dry_air_spec_heat_ratio = units.Quantity(1.4, 'dimensionless')
     Cp_d = dry_air_spec_heat_press = (
