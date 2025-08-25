@@ -328,7 +328,7 @@ class SkewT:
         # Try to make sane default temperature plotting ticks
         self.ax.xaxis.set_major_locator(MultipleLocator(50))
         self.ax.xaxis.set_units(units.degK)
-#        self.ax.set_xlim(-40, 50)
+        self.ax.set_xlim(0, 660)
         self.ax.grid(True)
 
         self.mixing_lines = None
